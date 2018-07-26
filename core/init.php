@@ -614,7 +614,14 @@ if($page != 'install'){
             $smarty->assign('SERVER_QUERY', $result);
 
         if(!is_null($default) && isset($default->ip)){
-            $smarty->assign('CONNECT_WITH', str_replace('{x}', $default->ip . ((!is_null($default->port) && $default->port != 25565) ? ':' . $default->port : ''), $language->get('general', 'connect_with_ip_x')));
+            $wrapped_ip_begin = <<<EOD
+                <button id="copyip" class="btn btn-primary" onclick="copyToClipboard('#copyip')">
+EOD;
+            $wrapped_ip_end = <<<EOD
+<i style="margin-left: 10px;" class="fa fa-sticky-note-o"></i></button>
+EOD;
+            $copy_ip = $wrapped_ip_begin . $default->ip . ((!is_null($default->port) && $default->port != 25565) ? ':' . $default->port : '') . $wrapped_ip_end;
+            $smarty->assign('CONNECT_WITH', str_replace('{x}', $copy_ip, $language->get('general', 'connect_with_ip_x')));
             $smarty->assign('DEFAULT_IP', Output::getClean($default->ip . ($default->port != 25565 ? ':' . $default->port : '')));
         } else {
             $smarty->assign('CONNECT_WITH', '');
